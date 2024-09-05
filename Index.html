@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Profit Calculator</title>
+    <style>
+        /* You can add your CSS styles here */
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <input type="text" id="storeDomain" placeholder="Enter store domain">
+        <button onclick="fetchStoreData()">Fetch Store Data</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+    async function fetchStoreData() {
+        const storeDomain = document.getElementById('storeDomain').value;
+        const apiKey = '7906e457-a0f7-469c-521a-f572d059'; // Replace with your actual API key
+        const apiUrl = `https://api.storeleads.app/v1/stores/${storeDomain}`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch store data');
+            }
+
+            const data = await response.json();
+            
+            // Extract relevant data
+            const annualRevenue = data.annual_revenue;
+            const productCategory = data.product_category;
+
+            // Display results
+            displayResults(annualRevenue, productCategory);
+
+            // Calculate estimated profit
+            const estimatedProfit = calculateEstimatedProfit(annualRevenue, productCategory);
+
+            // Display estimated profit
+            document.getElementById('results').innerHTML += `<p>Estimated profit with Order Legend: $${estimatedProfit}</p>`;
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('results').innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+    }
+
+    function displayResults(annualRevenue, productCategory) {
+        document.getElementById('results').innerHTML = `
+            <p>Annual Revenue: $${annualRevenue}</p>
+            <p>Product Category: ${productCategory}</p>
+        `;
+    }
+
+    function calculateEstimatedProfit(annualRevenue, productCategory) {
+        // Implement your profit estimation logic here
+        // This is a placeholder calculation
+        return annualRevenue * 0.1; // Assuming 10% profit for demonstration
+    }
+    </script>
+</body>
+</html>
